@@ -1,7 +1,9 @@
+from typing import Any
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from .forms import ReviewForm
 from django.views import View
+from django.views.generic.base import TemplateView
 # from .models import Review
 
 # Create your views here.
@@ -40,5 +42,15 @@ class ReviewView(View):
 #     })
 
 
-def thank_you(request):
-    return render(request, "reviews/thank_you.html")
+class ThankYouView(TemplateView):
+    template_name = "reviews/thank_you.html" # now django will automatically render this template if it gets any GET request
+
+    #if we need pass any context to a template we can do it like below for class based views
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['message'] = "This works!"
+        return context
+
+
+    # def get(self, request):
+    #     return render(request, "reviews/thank_you.html")
