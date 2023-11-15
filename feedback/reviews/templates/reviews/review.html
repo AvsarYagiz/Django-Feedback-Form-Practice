@@ -6,16 +6,19 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Your Review</title>
-    <link rel="stylesheet" href="{% static 'reviews/style.css' %}">
+    <link rel="stylesheet" href="{% static 'reviews/style.css' %}" />
   </head>
   <body>
     <form action="/" method="POST" novalidate>
-      {% csrf_token %}
-      <div class="form-control {% if form.user_name.errors %}errors{% endif %}">
-        {{form.user_name.label_tag}} 
-        {{form.user_name}}
-        {{form.user_name.errors}}
+      {% csrf_token %} 
+      {% for field in form %}
+      <div class="form-control {% if field.errors %}errors{% endif %}">
+        {{field.label_tag}} 
+        {{field}}
+        {{field.errors}}
       </div>
+      {% endfor %}
+
       <button type="submit">Send</button>
     </form>
   </body>
