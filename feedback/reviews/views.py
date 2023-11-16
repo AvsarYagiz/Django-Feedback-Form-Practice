@@ -1,26 +1,45 @@
-from typing import Any
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
-from .forms import ReviewForm
 from django.views import View
 from django.views.generic.base import TemplateView
+from django.views.generic import ListView, DetailView
+from django.views.generic.edit import CreateView
+
+from .forms import ReviewForm
+from .models import Review
 # from .models import Review
 
 # Create your views here.
 
 
-class ReviewView(View):
-    def get(self, request):
-        form = ReviewForm()
-        return render(request, "reviews/review.html", {
-            "form": form
-        })
+# class ReviewView(FormView):
+#     form_class = ReviewForm
+#     template_name = "reviews/review.html"
+#     success_url = "/thank-you"
+    
+#     def form_valid(self, form):
+#         form.save()
+#         return super().form_valid(form)
 
-    def post(self, request):
-        form = ReviewForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return HttpResponseRedirect('/thank_you')
+# common way automatically saves the data and creates form so no need spesific form at form.py anymore but for configuration we still use form setup at form.py
+class ReviewView(CreateView):
+    model = Review
+    form_class = ReviewForm  #fields = '__all__' if no need config the form fields
+    template_name = "reviews/review.html"
+    success_url = "/thank-you"
+
+
+    # def get(self, request):
+    #     form = ReviewForm()
+    #     return render(request, "reviews/review.html", {
+    #         "form": form
+    #     })
+
+    # def post(self, request):
+    #     form = ReviewForm(request.POST)
+    #     if form.is_valid():
+    #         form.save()
+    #         return HttpResponseRedirect('/thank_you')
 
 
 # def review(request):
@@ -54,3 +73,26 @@ class ThankYouView(TemplateView):
 
     # def get(self, request):
     #     return render(request, "reviews/thank_you.html")
+
+class ReviewsListView(ListView):
+    template_name = "reviews/review_list.html"
+    model = Review
+    context_object_name = 'reviews'
+
+#filtering
+    def get_queryset(self):
+        base_query = super().get_queryset()
+        data = base_query.filter(rating__gt=4)
+        return data
+
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     reviews = Review.objects.all()
+    #     context["reviews"] = reviews
+    #     return context
+    
+
+class SingleReviewView(DetailView):
+    template_name = "reviews/single_review.html"
+    model = Review
+    context_object_name = 'reviews'
