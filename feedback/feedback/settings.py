@@ -128,6 +128,8 @@ STATICFILES_DIRS = [
 MEDIA_ROOT= BASE_DIR / "uploads"
 MEDIA_URL = "/user-media/"
 
+# SESSION_COOKIE_AGE = 120 session time limit default one is twelwe weeks
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
